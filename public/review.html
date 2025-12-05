@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Orders</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #fff5f4;
+        }
+        h1 {
+            text-align: center;
+            color: #008000;
+        }
+        .order {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            align-items: flex-start;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .order img {
+            width: 100px;
+            height: auto;
+            margin-right: 20px;
+            border-radius: 5px;
+        }
+        .order-info {
+            flex-grow: 1;
+        }
+        .sentiment {
+            font-weight: bold;
+            color: #008000;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Orders</h1>
+    <div id="orders"></div>
+
+    <h1>My Orders</h1>
+    <div id="orders">Loading...</div>
+
+    <script>
+        fetch('http://localhost:5000/api/orders')
+            .then(response => response.json())
+            .then(responseData => {
+                console.log('📦 Orders API Response:', responseData);
+                
+                if (responseData.success && responseData.data.length > 0) {
+                    displayOrders(responseData.data);
+                } else {
+                    document.getElementById('orders').innerText = 'No orders available.';
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error fetching orders:', error);
+                document.getElementById('orders').innerText = 'Error loading orders.';
+            });
+
+        function displayOrders(orders) {
+            const ordersContainer = document.getElementById('orders');
+            ordersContainer.innerHTML = '';
+            orders.forEach(order => {
+                const orderDiv = document.createElement('div');
+                orderDiv.className = 'order';
+                orderDiv.innerHTML = `
+                    <img src="${order.productImage}" alt="${order.productName}" />
+                    <div class="order-info">
+                        <h2>${order.productName}</h2>
+                        <p>Price: $${order.productPrice.toFixed(2)}</p>
+                        <p>Ordered by: ${order.name}</p>
+                        <p>Address: ${order.address}</p>
+                        <h3>Reviews:</h3>
+                        <div id="reviews-${order._id}"></div>
+                    </div>`;
+                ordersContainer.appendChild(orderDiv);
+            });
+        }
+    </script>
+</body>
+</html>

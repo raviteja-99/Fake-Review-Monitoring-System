@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Store Products</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome CDN -->
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f8fff8; /* Light green background */
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #2e7d32; /* Green header */
+            color: #fff;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        .cart-icon-container {
+            position: relative;
+        }
+        #cart-icon {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            color: #fff; /* White cart icon */
+        }
+        .products-container {
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .product-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            width: calc(25% - 20px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+            transition: transform 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-5px); /* Lift effect on hover */
+        }
+        .product-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px; /* Rounded corners for images */
+        }
+        .product-title {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            color: #333; /* Dark text for product title */
+        }
+        .product-price {
+            font-size: 1rem;
+            color: #2e7d32; /* Green text for price */
+        }
+        .add-to-cart, .buy-now {
+            background-color: #2e7d32; /* Green button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .add-to-cart:hover, .buy-now:hover {
+            background-color: #1b5e20; /* Darker green on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Products List</h1>
+        <div class="cart-icon-container" onclick="window.location.href='cart.html'">
+            <i class="fas fa-shopping-cart" id="cart-icon"></i>
+        </div>
+    </div>
+
+    <div id="products-container" class="products-container"></div>
+
+    <script>
+        // Fetch products from the Fake Store API
+        fetch('https://fakestoreapi.com/products')
+            .then(response => response.json())
+            .then(products => {
+                const productsContainer = document.getElementById('products-container');
+                products.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.innerHTML = `
+                        <img src="${product.image}" alt="${product.title}" class="product-image" />
+                        <h3 class="product-title">${product.title}</h3>
+                        <p class="product-price">$${product.price}</p>
+                        <button class="add-to-cart" data-id="${product.id}">Add to Cart</button>
+                        <button class="buy-now" data-id="${product.id}" data-title="${product.title}" data-price="${product.price}" data-image="${product.image}">Buy Now</button>
+                    `;
+                    productsContainer.appendChild(productCard);
+
+                    // Add click event for the Buy Now button
+                    productCard.querySelector('.buy-now').addEventListener('click', () => {
+                        const order = {
+                            productName: product.title,
+                            productPrice: product.price,
+                            productImage: product.image,
+                        };
+
+                        // Redirect to checkout.html with product details in URL
+                        window.location.href = 'checkout.html?name=' + encodeURIComponent(product.title) +
+                                              '&price=' + encodeURIComponent(product.price) +
+                                              '&image=' + encodeURIComponent(product.image);
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching products:', error);
+            });
+    </script>
+</body>
+</html>

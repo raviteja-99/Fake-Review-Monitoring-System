@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f8fff8; /* Light green background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .registration-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            max-width: 800px; /* Increase max-width of the container */
+            width: 100%; /* Make it responsive */
+        }
+
+        .registration-form {
+            flex: 1; /* Take remaining space */
+            padding: 20px;
+        }
+
+        .registration-image {
+            width: 350px; /* Increased width */
+            height: 400px; /* Increased height */
+            border-radius: 0 10px 10px 0; /* Round the right corners */
+            object-fit: cover; /* Ensure the image covers the area without distortion */
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #2e7d32; /* Green button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1b5e20; /* Darker green on hover */
+        }
+
+        @media (max-width: 768px) {
+            .registration-container {
+                flex-direction: column; /* Stack elements on smaller screens */
+                align-items: center;
+            }
+
+            .registration-image {
+                display: none; /* Hide image on small screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+        <div class="registration-form">
+            <h1>Register</h1>
+            <form id="registration-form">
+<!-- Change username input to name -->
+            <input type="text" name="name" placeholder="Full Name" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+                
+                <button type="submit">Register</button>
+            </form>
+        </div>
+        <img src="registration.png" alt="Registration Illustration" class="registration-image"> <!-- Replace with your actual image path -->
+    </div>
+
+    <script>
+        document.getElementById('registration-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            try {
+                const response = await fetch('http://localhost:5000/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                alert(result.message);
+                if (response.ok) {
+                    window.location.href = 'login.html'; // Redirect to login after registration
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

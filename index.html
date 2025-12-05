@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Shop and Review</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f8fff8; /* Light green background */
+            display: flex; /* Use flexbox for layout */
+            height: 100vh;
+            color: #fff;
+        }
+        .left-half {
+            flex: 0 0 40%; /* Set width to 40% of the page */
+            display: flex;
+            justify-content: center; /* Center content */
+            align-items: center; /* Center content vertically */
+            position: relative; /* For positioning child elements */
+        }
+        .right-half {
+            flex: 1; /* Take remaining space */
+            display: flex;
+            flex-direction: column; /* Stack children vertically */
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
+            background-color: #f8fff8; /* Light green background for right half */
+        }
+        h1 {
+            font-size: 3rem;
+            color: #2e7d32; /* Green heading color */
+            margin-bottom: 20px; /* Space below heading */
+            text-align: center; /* Center the heading text */
+        }
+        .options {
+            display: flex; /* Keep options horizontal */
+            margin-top: 20px; /* Space above options */
+        }
+        .option {
+            width: 180px;
+            height: 180px;
+            background-color: #2e7d32; /* Green button */
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            margin: 0 10px; /* Space between options */
+        }
+        .option:hover {
+            background-color: #1b5e20; /* Darker green on hover */
+        }
+        .option h2 {
+            font-size: 1.8rem;
+        }
+
+        /* Style for floating image */
+        .floating-image {
+            position: absolute; /* Position it within the left half */
+            bottom: 0;
+            left: 0;
+            width: 100%; /* Full width of left half */
+            height: auto; /* Maintain aspect ratio */
+            max-height: 100%; /* Limit height to half of the viewport */
+            /* Removed border property */
+        }
+    </style>
+</head>
+<body>
+    <div class="left-half">
+        <img src="homeshop.jpg" class="floating-image" alt="Shop Icon">
+    </div>
+    <div class="right-half">
+        <h1>Welcome to Shop the Trusted Products</h1> <!-- Updated heading -->
+        <div class="options">
+            <div class="option" id="shop-option">
+                <h2>Shop</h2>
+            </div>
+            <div class="option" id="review-option">
+                <h2>Review</h2>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add event listeners for options
+        document.getElementById('shop-option').addEventListener('click', () => {
+            window.location.href = 'shop.html'; // Redirect to the Shop page
+        });
+
+        document.getElementById('review-option').addEventListener('click', () => {
+            window.location.href = 'review.html'; // Redirect to the Review page
+        });
+    </script>
+</body>
+</html>

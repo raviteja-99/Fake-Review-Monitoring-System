@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Orders</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #fff5f4;
+        }
+        h1 {
+            text-align: center;
+            color: #008000;
+        }
+        .order {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            align-items: flex-start;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .order img {
+            width: 100px;
+            height: auto;
+            margin-right: 20px;
+            border-radius: 5px;
+        }
+        .order-info {
+            flex-grow: 1;
+        }
+        .sentiment {
+            font-weight: bold;
+            color: #008000;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Orders</h1>
+    <div id="orders"></div>
+
+    <script>
+        // Frontend: review.html
+fetch('http://localhost:5000/api/orders')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            displayOrders(data.orders);
+        } else {
+            console.error('Failed to load orders:', data.message);
+            document.getElementById('orders').innerText = 'Failed to load orders.';
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching orders:', error);
+        document.getElementById('orders').innerText = 'Error loading orders.';
+    });
+
+function displayOrders(orders) {
+    const ordersContainer = document.getElementById('orders');
+    ordersContainer.innerHTML = '';
+
+    orders.forEach(order => {
+        const orderDiv = document.createElement('div');
+        orderDiv.className = 'order';
+        orderDiv.innerHTML = `
+            <img src="${order.productImage}" alt="${order.productName}" />
+            <div class="order-info">
+                <h2>${order.productName}</h2>
+                <p>Price: $${order.productPrice}</p>
+                <p>Ordered by: ${order.name}</p>
+                <p>Address: ${order.address}</p>
+                <h3>Reviews:</h3>
+                <div id="reviews-${order._id}">
+                    <div id="review-container-${order._id}"></div>
+                </div>
+                <textarea id="reviewText-${order._id}" placeholder="Write your review here..."></textarea>
+                <button onclick="submitReview('${order._id}')">Submit Review</button>
+            </div>
+        `;
+        ordersContainer.appendChild(orderDiv);
+
+        displayReviews(order._id, order.reviews);
+    });
+}
+
+function displayReviews(orderId, reviews) {
+    const reviewContainer = document.getElementById(`review-container-${orderId}`);
+    reviews.forEach(review => {
+        const reviewDiv = document.createElement('div');
+        reviewDiv.className = 'review';
+        reviewDiv.innerHTML = `
+            <p>${review.reviewText} <span class="sentiment">(${review.sentiment}, Score: ${review.sentimentScore}, IP: ${review.ipAddress})</span></p>
+        `;
+        reviewContainer.appendChild(reviewDiv);
+    });
+}
+
+function submitReview(orderId) {
+    const reviewText = document.getElementById(`reviewText-${orderId}`).value;
+    fetch('http://localhost:5000/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId, reviewText }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById(`reviewText-${orderId}`).value = '';
+            const reviewContainer = document.getElementById(`review-container-${orderId}`);
+            const reviewDiv = document.createElement('div');
+            reviewDiv.className = 'review';
+            reviewDiv.innerHTML = `
+                <p>${reviewText} <span class="sentiment">(${data.sentiment}, Score: ${data.sentimentScore}, IP: ${data.ipAddress})</span></p>
+            `;
+            reviewContainer.appendChild(reviewDiv);
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error submitting review:', error);
+        alert('Error submitting review.');
+    });
+}
+
+    </script>
+</body>
+</html>
