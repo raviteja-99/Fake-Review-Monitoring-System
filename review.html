@@ -46,7 +46,13 @@
 
     <script>
         // Frontend: review.html
-fetch('http://localhost:5000/api/orders')
+const token = localStorage.getItem("token");
+
+fetch('http://localhost:5000/api/orders', {
+    headers: {
+        Authorization: "Bearer " + token
+    }
+})              
     .then(response => {
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -108,9 +114,14 @@ function displayReviews(orderId, reviews) {
 
 function submitReview(orderId) {
     const reviewText = document.getElementById(`reviewText-${orderId}`).value;
+    const token = localStorage.getItem("token");
+
     fetch('http://localhost:5000/api/reviews', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: "Bearer " + token
+        },
         body: JSON.stringify({ orderId, reviewText }),
     })
     .then(response => response.json())
